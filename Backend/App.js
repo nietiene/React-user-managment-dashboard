@@ -10,6 +10,7 @@ App.use(session({
     secret: 'factorise@123',
     resave: false,
     saveUninitialized: true,
+    cookie: {secure: false}
 }));
 
 App.use(cors({

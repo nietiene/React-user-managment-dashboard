@@ -25,13 +25,13 @@ connection.connect((err) => {
 //     }
 //  }
 
-//  // IsAdmin logged in 
-//  function isAdmin(req, res, next) {
-//     if (req.session.user && req.session.user.role === 'admin') {
-//         return next();
-//     }
-//     res.status(403).send("Access denied (admin only)");
-//  }
+ // IsAdmin logged in 
+ function isAdmin(req, res, next) {
+    if (req.session.user && req.session.user.role === 'admin') {
+        return next();
+    }
+    res.status(403).json("Access denied (admin only)");
+ }
 
 //  function isUser(req, res, next) {
 //     if (req.session.user && req.session.role === 'user') {
@@ -45,42 +45,53 @@ connection.connect((err) => {
 //     res.render("login");
 // });
 
-// // handle login login
-// router.post('/login', (req, res) => {
-//     const { name, password } = req.body;
-//     const sqlLogin = "SELECT * FROM user WHERE name = ? AND password = ?";
-//     connection.query(sqlLogin, [ name, password ], (err, result) => {
-//         if (err) return res.status(500).send("Login error");
-//         if (result.length === 1) {
-//             const user = result[0];
-//             req.session.user = {
-//                 id: user.id,
-//                 name: user.name,
-//                 role: user.role,
-//             };
+// handle login login
+router.post('/login', (req, res) => {
+    const { name, password } = req.body;
+    const sqlLogin = "SELECT * FROM user WHERE name = ? AND password = ?";
+    connection.query(sqlLogin, [ name, password ], (err, result) => {
+        if (err) return res.status(500).json("Login error");
+        if (result.length === 1) {
+            const user = result[0];
+            req.session.user = {
+                id: user.id,
+                name: user.name,
+                role: user.role,
+            };
 
-//             if (user.role === 'admin' ){
-//                 res.redirect('/');
-//             } else {
+            if (user.role === 'admin' ){
+                res.json('Welcome admin');
+            } else {
                
-//                 res.render('userPage', {
-//                      user: [user],
-//                      sessionUser: req.session.user  
-//                 });
-//             }
+                res.json({
+                     user: [user],
+                     sessionUser: req.session.user  
+                });
+            }
            
-//         } else {
-//             res.send("Invalid credentials");
-//         }
-//     });
+        } else {
+            res.json("Invalid credentials");
+        }
+    });
 
-// });
+});
 
 // // logout 
-// router.get('/logout', (req, res) => {
-//     req.session.destroy();
-//     res.redirect('/login');
-// });
+router.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) res.status(500).json("Failed to log out");
+        res.clearCookie('connect.id');
+        res.json("Logged Out");
+    });
+});
+
+router.get('/session', (req, res) => {
+    if (req.session.user) {
+        res.json({ loggedIn: true, user: req.session.user});
+    } else {
+        res.json({ loggedIn: false});
+    }
+})
 // // Get All users
 router.get('/api/users', (req, res) => {
     const sqlSelect = "SELECT * FROM user";
