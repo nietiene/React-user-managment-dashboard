@@ -182,19 +182,19 @@ router.get('/api/users', (req, res) => {
 //     res.render("addForm");
 // });
 
-// // Add New User
-// router.post('/add', isAuthorized, isAdmin, (req, res) => {
-//     const {name, password, role} = req.body;
-//     const sqlInsert = `INSERT INTO user(name, password, role) VALUES(?, ?, ?)`;
-//     connection.query(sqlInsert, [name, password, role], (err) => {
+// Add New User
+router.post('/add', (req, res) => {
+    const {name, password, role} = req.body;
+    const sqlInsert = `INSERT INTO user(name, password, role) VALUES(?, ?, ?)`;
+    connection.query(sqlInsert, [name, password, role], (err) => {
        
-//         if (!err) {
-//             res.redirect("/");
-//         } else {
-//             res.status(500).send("data not inserted");
-//         }
-//     });
-// });
+        if (!err) {
+           res.json("User Inserted")
+        } else {
+            res.status(500).json("data not inserted");
+        }
+    });
+});
 
 // // Update user 
 // router.get('/edit/:id' , isAuthorized, isAdmin,(req, res) => {
