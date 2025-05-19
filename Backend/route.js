@@ -82,7 +82,7 @@ connection.connect((err) => {
 //     res.redirect('/login');
 // });
 // // Get All users
-router.get('/', (req, res) => {
+router.get('/api/users', (req, res) => {
     const sqlSelect = "SELECT * FROM user";
     connection.query(sqlSelect, (err, result) => {
         
