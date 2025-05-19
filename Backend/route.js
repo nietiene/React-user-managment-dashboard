@@ -223,17 +223,17 @@ router.post('/update/:id',(req, res) => {
     });
 });
 
-// router.get('/delete/:id', isAuthorized, isAdmin,(req, res) => {
-//     const id = parseInt(req.params.id);
-//     const deleteSql = `DELETE FROM user WHERE id = ?`;
-//     connection.query(deleteSql, id, (err) => {
+router.get('/delete/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const deleteSql = `DELETE FROM user WHERE id = ?`;
+    connection.query(deleteSql, id, (err) => {
        
-//         if (err) {
-//             res.status(500).send("User Not Deleted");
-//         } else {
-//             res.status(200).redirect('/');
-//         }
-//     });
-// });
+        if (err) {
+            res.status(500).json({message: "User Not Deleted"});
+        } else {
+            res.json({message:'User deleted'});
+        }
+    });
+});
 
 module.exports = router;
