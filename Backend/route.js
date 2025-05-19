@@ -207,6 +207,7 @@ router.get('/update/:id', (req, res) => {
     
 });
 
+// pushing codes
 router.post('/update/:id',(req, res) => {
 
     const id = parseInt(req.params.id);
