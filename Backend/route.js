@@ -197,38 +197,30 @@ router.post('/add', (req, res) => {
 });
 
 // // Update user 
-// router.get('/edit/:id' , isAuthorized, isAdmin,(req, res) => {
-//       const id = parseInt(req.params.id);
-//       const user = req.session.user;
-//       const select= `SELECT * FROM user WHERE id = ?`;
-//       connection.query(select, id, (err, result) => {
-//       if (err || result.length === 0) return res.status(404).send("user not found");
-
-//       if (user.role !== 'admin' && user.id != id) {
-//         return res.status(403).send("Access denied");
-//       }
-//       res.render("updateForm", {user: result[0] })
-//       });
+router.get('/update/:id', (req, res) => {
+      const id = parseInt(req.params.id);
+      const select= `SELECT * FROM user WHERE id = ?`;
+      connection.query(select, id, (err, result) => {
+      if (err || result.length === 0) return res.status(404).send("user not found");
+      res.json({user: result[0]})
+      });
     
-// });
+});
 
-// router.post('/edit/:id', isAuthorized, isAdmin,(req, res) => {
+router.post('/update/:id',(req, res) => {
 
-//     const id = parseInt(req.params.id);
-//     const {name, password} = req.body;
-//     const user = req.session.user;
-//     if (user.role !== 'admin' && user.id !== id) {
-//         return res.status(403).send("Access denied");
-//     }
-//     const UpdateSql = `UPDATE user SET name = ? , password = ? WHERE id = ${id}`;
-//     connection.query(UpdateSql, [name, password], (err) => {
-//         if (err) {
-//             req.status(500).send("Data not updated", err);
-//         } else {
-//             res.redirect('/'); // After operation done navigate to home page to view changes
-//         }
-//     });
-// });
+    const id = parseInt(req.params.id);
+    const {name, password} = req.body;
+   
+    const UpdateSql = `UPDATE user SET name = ? , password = ? WHERE id = ${id}`;
+    connection.query(UpdateSql, [name, password], (err) => {
+        if (err) {
+            res.status(500).json("Data not updated", err);
+        } else {
+            res.json({ message: "Data Updated Successfully"});
+        }
+    });
+});
 
 // router.get('/delete/:id', isAuthorized, isAdmin,(req, res) => {
 //     const id = parseInt(req.params.id);
