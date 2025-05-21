@@ -189,9 +189,9 @@ router.get('/api/users', (req, res) => {
 
 // Add New User
 router.post('/add', (req, res) => {
-    const {name, password, role} = req.body;
-    const sqlInsert = `INSERT INTO user(name, password, role) VALUES(?, ?, ?)`;
-    connection.query(sqlInsert, [name, password, role], (err) => {
+    const {name, password} = req.body;
+    const sqlInsert = `INSERT INTO user(name, password) VALUES(?, ?)`;
+    connection.query(sqlInsert, [name, password], (err) => {
        
         if (!err) {
            res.json("User Inserted")
