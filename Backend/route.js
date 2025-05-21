@@ -57,7 +57,8 @@ router.post('/login', (req, res) => {
           return res.json({
             message: "Login Successfully",
             role: user.role,
-            user: req.session.user
+            id: user.id,
+            name: user.name
           });
         } else {
             res.json({error:"Invalid credentials"});
@@ -81,7 +82,11 @@ router.get('/logout', (req, res) => {
 
 router.get('/session', (req, res) => {
     if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user});
+        res.json({ loggedIn: true, user: {
+            id: req.session.user.id,
+            name: req.session.user.name,
+            role: req.session.user.role,
+        }});
     } else {
         res.json({ loggedIn: false});
     }
