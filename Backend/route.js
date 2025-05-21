@@ -61,7 +61,7 @@ router.post('/login', (req, res) => {
           return res.json({
             message: "Login Successfully",
             role: user.role,
-            user: user
+            user: user.session.user
           });
         } else {
             res.json("Invalid credentials");
