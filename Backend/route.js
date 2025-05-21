@@ -33,13 +33,13 @@ connection.connect((err) => {
     res.status(403).json("Access denied (admin only)");
  }
 
-//  function isUser(req, res, next) {
-//     if (req.session.user && req.session.user.role === 'user') {
-//         return next();
-//     } else {
-//         res.render('user');
-//     }
-//  }
+ function isUser(req, res, next) {
+    if (req.session.user && req.session.user.role === 'user') {
+        return next();
+    } else {
+        res.render('user');
+    }
+ }
 
 // handle login login
 router.post('/login', (req, res) => {
@@ -106,20 +106,20 @@ router.get('/api/users', isAdmin, (req, res) => {
 
 // // get page from user
 
-// router.get('/user/:id', isUser, (req, res) => {
-//    const id = parseInt(req.params.id);
-//    const sql = "SELECT * FROM user WHERE id = ?";
-//    connection.query(sql, [id], (err, data) => {
-//     if (err) {
-//        return res.status(500).send("ERROR:" + err.message);
-//     }
+router.get('/user/:id', isUser, (req, res) => {
+   const id = parseInt(req.params.id);
+   const sql = "SELECT * FROM user WHERE id = ?";
+   connection.query(sql, [id], (err, data) => {
+    if (err) {
+       return res.status(500).json("ERROR:" + err.message);
+    }
   
-//      res.render("userPage", {
-//         user: data,
-//         sessionUser: req.session.user
-//      })
-//    });
-// });
+     res.json({
+        user: data,
+        sessionUser: req.session.user
+     })
+   });
+});
 
 // // get form to update
 // router.get('/update/:id', (req, res) => {
