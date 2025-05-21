@@ -17,33 +17,29 @@ connection.connect((err) => {
     }
 });
 
-//  function isAuthorized (req, res, next) {
-//     if (!req.session.user) {
-//         res.redirect("/login");
-//     } else {
-//         next();
-//     }
-//  }
+ function isAuthorized (req, res, next) {
+    if (!req.session.user) {
+        res.redirect("/login");
+    } else {
+        next();
+    }
+ }
 
  // IsAdmin logged in 
  function isAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
         return next();
     }
-    res.status(403).json("Access denied (admin only)");
+    res.status(401).json("Access denied (admin only)");
  }
 
-//  function isUser(req, res, next) {
-//     if (req.session.user && req.session.role === 'user') {
-//         return next();
-//     } else {
-//         res.render('user');
-//     }
-//  }
-// // login
-// router.get('/login', (req, res) => {
-//     res.render("login");
-// });
+ function isUser(req, res, next) {
+    if (req.session.user && req.session.user.role === 'user') {
+        return next();
+    } else {
+        res.render('user');
+    }
+ }
 
 // handle login login
 router.post('/login', (req, res) => {
@@ -74,7 +70,11 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) res.status(500).json("Failed to log out");
-        res.clearCookie('connect.id');
+        res.clearCookie('connect.id', {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'lax'
+        });
         res.json("Logged Out");
     });
 });
@@ -87,7 +87,7 @@ router.get('/session', (req, res) => {
     }
 })
 // // Get All users
-router.get('/api/users', (req, res) => {
+router.get('/api/users', isAdmin, isAuthorized, (req, res) => {
     const sqlSelect = "SELECT * FROM user";
     connection.query(sqlSelect, (err, result) => {
         
@@ -188,7 +188,7 @@ router.get('/api/users', (req, res) => {
 // });
 
 // Add New User
-router.post('/add', (req, res) => {
+router.post('/add', isAdmin, isAuthorized, (req, res) => {
     const {name, password} = req.body;
     const sqlInsert = `INSERT INTO user(name, password) VALUES(?, ?)`;
     connection.query(sqlInsert, [name, password], (err) => {
@@ -202,7 +202,7 @@ router.post('/add', (req, res) => {
 });
 
 // // Update user 
-router.get('/update/:id', (req, res) => {
+router.get('/update/:id', isAdmin, isAuthorized, (req, res) => {
       const id = parseInt(req.params.id);
       const select= `SELECT * FROM user WHERE id = ?`;
       connection.query(select, id, (err, result) => {
@@ -213,7 +213,7 @@ router.get('/update/:id', (req, res) => {
 });
 
 // pushing codes
-router.post('/update/:id',(req, res) => {
+router.post('/update/:id', isAdmin, isAuthorized, (req, res) => {
 
     const id = parseInt(req.params.id);
     const {name, password} = req.body;
@@ -228,7 +228,7 @@ router.post('/update/:id',(req, res) => {
     });
 });
 
-router.get('/delete/:id', (req, res) => {
+router.get('/delete/:id',  isAdmin, isAuthorized, (req, res) => {
     const id = parseInt(req.params.id);
     const deleteSql = `DELETE FROM user WHERE id = ?`;
     connection.query(deleteSql, id, (err) => {
