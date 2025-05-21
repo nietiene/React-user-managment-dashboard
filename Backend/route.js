@@ -50,7 +50,7 @@ router.post('/login', (req, res) => {
     const { name, password } = req.body;
     const sqlLogin = "SELECT * FROM user WHERE name = ? AND password = ?";
     connection.query(sqlLogin, [ name, password ], (err, result) => {
-        if (err) return res.status(500).json("Login error");
+        if (err) return res.status(500).json({error:"Login error"});
         if (result.length === 1) {
             const user = result[0];
             req.session.user = {
@@ -61,10 +61,10 @@ router.post('/login', (req, res) => {
           return res.json({
             message: "Login Successfully",
             role: user.role,
-            user: user.session.user
+            user: req.session.user
           });
         } else {
-            res.json("Invalid credentials");
+            res.json({error:"Invalid credentials"});
         }
     });
 
