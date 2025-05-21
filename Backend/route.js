@@ -58,17 +58,11 @@ router.post('/login', (req, res) => {
                 name: user.name,
                 role: user.role,
             };
-
-            if (user.role === 'admin' ){
-                res.json('Welcome admin');
-            } else {
-               
-                res.json({
-                     user: [user],
-                     sessionUser: req.session.user  
-                });
-            }
-           
+          return res.json({
+            message: "Login Successfully",
+            role: user.role,
+            user: user
+          });
         } else {
             res.json("Invalid credentials");
         }
