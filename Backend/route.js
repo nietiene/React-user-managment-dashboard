@@ -19,7 +19,7 @@ connection.connect((err) => {
 
  function isAuthorized (req, res, next) {
     if (!req.session.user) {
-        res.redirect("/login");
+        res.json({message: "UnAuthorized"});
     } else {
         next();
     }
@@ -30,7 +30,7 @@ connection.connect((err) => {
     if (req.session.user && req.session.user.role === 'admin') {
         return next();
     }
-    res.status(401).json("Access denied (admin only)");
+    res.status(403).json("Access denied (admin only)");
  }
 
  function isUser(req, res, next) {
