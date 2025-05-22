@@ -128,18 +128,22 @@ router.get('/user/:id', isUser, (req, res) => {
    });
 });
 
-// // get form to update
-// router.get('/update/:id', (req, res) => {
-//     const id = parseInt(req.params.id);
-//     const sql = "SELECT * FROM user WHERE id = ?";
-//     connection.query(sql, [id], (err, data)  => {
-//         if (err) {
-//             res.status(403).send("Database error");
-//         } else {
-//             res.render('update', {user: data[0]});
-//         }
-//     });
-// });
+// get form to update
+router.get('/update/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+        return res.status(400).json({error: "Invalid id"});
+    }
+    const sql = "SELECT * FROM user WHERE id = ?";
+    connection.query(sql, [id], (err, data)  => {
+        if (err) {
+            res.status(403).json({error:"Database error"});
+        } if (data.length === 0) {
+         return res.status(404).json({error: "User not found"})
+        }
+         res.json(data[0]);
+    });
+});
 
 // // perform update logic
 // router.post('/update/:id', (req, res) => {
