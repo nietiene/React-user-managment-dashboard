@@ -37,7 +37,7 @@ connection.connect((err) => {
     if (req.session.user && req.session.user.role === 'user') {
         return next();
     } else {
-        res.render('user');
+        res.json({error: 'Login first'});
     }
  }
 
@@ -107,11 +107,11 @@ router.get('/api/users', isAdmin, (req, res) => {
 // // get page from user
 
 router.get('/user/:id', isUser, (req, res) => {
-   const { id } = parseInt(req.params.id);
+   const id = parseInt(req.params.id);
     if (isNaN(id)) {
      return res.status(400).json({ error: "Input valid id"}); 
    }
-   const sql = "SELECT * FROM user WHERE id = ?";
+   const sql = "SELECT * FROM `user` WHERE id = ?";
    connection.query(sql, [id], (err, data) => {
     if (err) {
        console.error("SQL error:", err);
@@ -119,8 +119,8 @@ router.get('/user/:id', isUser, (req, res) => {
     }
   
      res.json({
-        user: data,
-        sessionUser: req.session.user
+        user: data[0],
+        sessionUser: req.session.user || null
      })
    });
 });
