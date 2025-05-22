@@ -107,7 +107,7 @@ router.get('/api/users', isAdmin, (req, res) => {
 // // get page from user
 
 router.get('/user/:id', isUser, (req, res) => {
-   const id = parseInt(req.params.id);
+   const { id } = parseInt(req.params.id);
     if (isNaN(id)) {
      return res.status(400).json({ error: "Input valid id"}); 
    }
