@@ -129,7 +129,7 @@ router.get('/user/:id', isUser, (req, res) => {
 });
 
 // get form to update
-router.get('/update/:id', (req, res) => {
+router.get('/update/:id', isUser,(req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
         return res.status(400).json({error: "Invalid id"});
@@ -145,27 +145,27 @@ router.get('/update/:id', (req, res) => {
     });
 });
 
-// // perform update logic
-// router.post('/update/:id', (req, res) => {
-//     const id = parseInt(req.params.id);
-//     const { name, password } = req.body;
-//     const sql = "UPDATE user SET name = ?, password = ? WHERE id = ?";
-//     connection.query(sql, [name, password, id], (err) => {
-//         if (err) {
-//                res.status(500).send("Not Updated try again", err);
-//         }
-//        const fetchDataAgain = "SELECT * FROM user WHERE id = ?";
-//        connection.query(fetchDataAgain, [id], (err, data) => {
-//         if (err) {
-//             return res.status(500).send("Error in fetching data: ", err.message);
-//         } 
-//         res.render("userPage", {
-//             user: data,
-//             sessionUser: req.session.user
-//         })
-//        })
-//     })
-// })
+// perform update logic
+router.post('/update/:id', isUser,(req, res) => {
+    const id = parseInt(req.params.id);
+    const { name, password } = req.body;
+    const sql = "UPDATE user SET name = ?, password = ? WHERE id = ?";
+    connection.query(sql, [name, password, id], (err) => {
+        if (err) {
+               res.status(500).json("Not Updated try again", err);
+        }
+       const fetchDataAgain = "SELECT * FROM user WHERE id = ?";
+       connection.query(fetchDataAgain, [id], (err, data) => {
+        if (err) {
+            return res.status(500).json("Error in fetching data: ", err.message);
+        } 
+        res.json({
+            user: data,
+            sessionUser: req.session.user
+        })
+       })
+    })
+})
 
 // // make user delete only his account
 // router.get('/dlt/:id', (req, res) => {
