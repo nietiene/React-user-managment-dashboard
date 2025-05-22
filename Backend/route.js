@@ -108,6 +108,7 @@ router.get('/api/users', isAdmin, (req, res) => {
 
 router.get('/user/:id', isUser, (req, res) => {
    const id = parseInt(req.params.id);
+   console.log("Requeste user ID:", id);
     if (isNaN(id)) {
      return res.status(400).json({ error: "Input valid id"}); 
    }
@@ -117,7 +118,9 @@ router.get('/user/:id', isUser, (req, res) => {
        console.error("SQL error:", err);
        return res.status(500).json("ERROR:" + err.message);
     }
-  
+  if (data.length === 0) {
+    return res.status(404).json({error: " User Not Found"});
+  }
      res.json({
         user: data[0],
         sessionUser: req.session.user || null
