@@ -17,13 +17,13 @@ connection.connect((err) => {
     }
 });
 
- function isAuthorized (req, res, next) {
-    if (!req.session.user) {
-        res.json({message: "UnAuthorized"});
-    } else {
-        next();
-    }
- }
+//  function isAuthorized (req, res, next) {
+//     if (!req.session.user) {
+//         res.json({message: "UnAuthorized"});
+//     } else {
+//         next();
+//     }
+//  }
 
 //  IsAdmin logged in 
  function isAdmin(req, res, next) {
@@ -106,7 +106,7 @@ router.get('/api/users', isAdmin, (req, res) => {
 
 // // get page from user
 
-router.get('/user/:id', isUser, (req, res) => {
+router.get('/user/user/:id', isUser, (req, res) => {
    const id = parseInt(req.params.id);
 //    console.log("Requeste user ID:", id);
     if (isNaN(id)) {
@@ -129,7 +129,7 @@ router.get('/user/:id', isUser, (req, res) => {
 });
 
 // get form to update
-router.get('/update/:id', isUser,(req, res) => {
+router.get('/user/update/:id', isUser,(req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
         return res.status(400).json({error: "Invalid id"});
@@ -146,7 +146,7 @@ router.get('/update/:id', isUser,(req, res) => {
 });
 
 // perform update logic
-router.post('/update/:id', isUser,(req, res) => {
+router.post('/user/update/:id', isUser,(req, res) => {
     const id = parseInt(req.params.id);
     const { name, password } = req.body;
     const sql = "UPDATE user SET name = ?, password = ? WHERE id = ?";
@@ -218,7 +218,7 @@ router.post('/add', isAdmin, (req, res) => {
 });
 
 // // Update user 
-router.get('/update/:id', isAdmin, (req, res) => {
+router.get('/admin/update/:id', isAdmin, (req, res) => {
       const id = parseInt(req.params.id);
       const select= `SELECT * FROM user WHERE id = ?`;
       connection.query(select, id, (err, result) => {
@@ -229,7 +229,7 @@ router.get('/update/:id', isAdmin, (req, res) => {
 });
 
 // pushing codes
-router.post('/update/:id', isAdmin, (req, res) => {
+router.post('/admin/update/:id', isAdmin, (req, res) => {
 
     const id = parseInt(req.params.id);
     const {name, password} = req.body;
@@ -244,7 +244,7 @@ router.post('/update/:id', isAdmin, (req, res) => {
     });
 });
 
-router.get('/delete/:id', isAdmin, (req, res) => {
+router.get('/admin/delete/:id', isAdmin, (req, res) => {
     const id = parseInt(req.params.id);
     const deleteSql = `DELETE FROM user WHERE id = ?`;
     connection.query(deleteSql, id, (err) => {
