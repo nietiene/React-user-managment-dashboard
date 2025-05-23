@@ -167,18 +167,18 @@ router.post('/user/update/:id', isUser,(req, res) => {
     })
 })
 
-// // make user delete only his account
-// router.get('/dlt/:id', (req, res) => {
-//     const id = parseInt(req.params.id);
-//     const sql = "DELETE FROM user WHERE id = ?";
+// make user delete only his account
+router.get('/dlt/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const sql = "DELETE FROM user WHERE id = ?";
 
-//     connection.query(sql, [id], (err) => {
-//         if (err) {
-//             res.status(500).send("User not deleted");
-//         }
-//         res.render("register");
-//     })
-// });
+    connection.query(sql, [id], (err) => {
+        if (err) {
+            res.status(500).json({error: "User not deleted"});
+        }
+        res.json({message: "Account deleted Successfully now you can create another one if you want !!"});
+    })
+});
 
 // // register
 // router.get('/register', (req, res) => {
