@@ -188,7 +188,7 @@ router.post('/register', (req, res) => {
 
     connection.query(sql, [name, password], (err) => {
         if (err) {
-            res.status(500).json("Not registered try again !!", err);
+            res.status(500).json({error: "Not registered try again !!"}, err);
         } 
 
      res.json({message: 'Account created successfully'});
