@@ -180,28 +180,20 @@ router.get('/dlt/:id', (req, res) => {
     })
 });
 
-// // register
-// router.get('/register', (req, res) => {
-//     res.render("register");
-// });
 
-// // handle register login
-// router.post('/register', (req, res) => {
-//     const { name, password } = req.body;
-//     const sql = "INSERT INTO user(name, password) VALUES(?,?)";
+// handle register login
+router.post('/register', (req, res) => {
+    const { name, password } = req.body;
+    const sql = "INSERT INTO user(name, password) VALUES(?,?)";
 
-//     connection.query(sql, [name, password], (err) => {
-//         if (err) {
-//             res.status(500).send("Not registered try again !!", err);
-//         } 
+    connection.query(sql, [name, password], (err) => {
+        if (err) {
+            res.status(500).json("Not registered try again !!", err);
+        } 
 
-//      res.redirect('/login');
-//     })
-// });
-// // Add Data
-// router.get('/add', isAdmin, isAuthorized, (req, res) => {
-//     res.render("addForm");
-// });
+     res.json({message: 'Account created successfully'});
+    })
+});
 
 // Add New User
 router.post('/add', isAdmin, (req, res) => {
